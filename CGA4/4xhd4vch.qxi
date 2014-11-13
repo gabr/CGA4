@@ -20,8 +20,8 @@ bool wireframe_mode = false;
 float t  = 0;  // the time parameter (incremented in the idle-function)
 float speed = 0.1;  // rotation speed of the light source in degree/frame
 
-const double planetSlices = 24;
-const double planetStacks = 24;
+const double planetSlices = 64;
+const double planetStacks = 64;
 
 // sun
 const double sunRadius = 25;
@@ -29,16 +29,13 @@ glm::vec4 sunColor(1.0, 1.0, 0.0, 0.0);
 
 // earth
 const double earthRadius = 12;
-const float earthDegree = 2.0;
 // moon
 const double moonRadius = 6;
-const double moonSlices = 12;
-const double moonStacks = 12;
-const float moonDegree = 4.0;
+const double moonSlices = 32;
+const double moonStacks = 32;
 
 // saturn
 const double saturnRadius = 16;
-const float saturnDegree = 1.0;
 
 
 //We need to keep track of matrices ourselves
@@ -203,22 +200,18 @@ void display()
 	// Create a modelmatrix M for the positioning of planets
 	
 	//draw a yellow sun
-    glUseProgram(SunShader.Shader);
-    M = glm::mat4(1.0f) * glm::rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    M = glm::mat4(1.0f);
     SunShader.bindUniforms(M, V, P, glm::vec4(0.0), sunColor, t);
+    glUseProgram(SunShader.Shader);
     glutSolidSphere(sunRadius, planetSlices, planetStacks);
 	
 	//draw a blue earth
-    glUseProgram(PhongShader.Shader);
-    M = glm::rotate(earthDegree * t, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::translate(glm::vec3(50.0f, 0.0f, 0.0f));
     PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(0.0, 0.0, 1.0, 0.0), t);
+    glUseProgram(PhongShader.Shader);
     drawSphere(earthRadius, planetSlices, planetStacks);
 	
 	// draw the grey earth's moon
 	// remember that the transformation of the earth also affects the moon
-    M = M * glm::rotate(moonDegree * t, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::translate(glm::vec3(20.0f, 0.0f, 0.0f));
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(0.5, 0.5, 0.5, 0.0), t);
-    drawSphere(moonRadius, moonSlices, moonStacks);
 	
 	//draw saturn with its rings
 	

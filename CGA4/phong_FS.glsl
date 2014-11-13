@@ -15,6 +15,5 @@ void main() {
 
 	vec3 R;
 
-        gl_FragColor =  Color;
-
+        gl_FragColor = Color;
 }

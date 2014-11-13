@@ -18,5 +18,6 @@ void main()
  
  
     gl_Position = MVP * gl_Vertex;
- 
+    gl_FrontColor = vec4(1.0, 1.0, 0.0, 0.0);
+    
 }
