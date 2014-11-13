@@ -1,3 +1,6 @@
+// Arkadiusz Gabrys qe83mepi
+// Agnieszka Zacher by57zeja
+
 #include "helper.h"
 #include <math.h>
 
@@ -28,6 +31,7 @@ const double sunRadius = 25;
 const double sunSlices = 100;
 const double sunStacks = 100;
 glm::vec4 sunColor(1.0, 1.0, 0.0, 0.0);
+glm::vec4 lightSource(0.0, 0.0, 0.0, 1.0);
 
 // earth
 const double earthRadius = 12;
@@ -87,17 +91,14 @@ struct ShaderUniforms
 
 
         // TODO create the matrices MV,MVP and NormalMatrix
-
-
         glm::mat4 MV = V * M;
         glm::mat4 MVP = P * V * M;
         glm::mat3 NormalMatrix = glm::mat3(glm::transpose(glm::inverse(MV)));
 
-
 		glUniformMatrix4fv(location_MVP, 1, false, glm::value_ptr(MVP));
 		glUniformMatrix4fv(location_MV, 1, false, glm::value_ptr(MV));
 		glUniformMatrix3fv(location_NormalMatrix, 1, false, glm::value_ptr(NormalMatrix));
-		glUniform4fv(location_LightSourceViewSpace, 1, glm::value_ptr(LightSource));
+		glUniform4fv(location_LightSourceViewSpace, 1, glm::value_ptr(V * LightSource));
 		glUniform4fv(location_Color, 1, glm::value_ptr(Color));
 		glUniform1f(location_Time, 10*t);
 	}
@@ -192,10 +193,12 @@ void drawCircle(float r, int num_segments)
     {
         float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle
 
-        float x = r * cosf(theta);//calculate the x component
-        float y = r * sinf(theta);//calculate the y component
+        float x = cosf(theta);//calculate the x component
+        float y = sinf(theta);//calculate the y component
 
-        glVertex2f(x, y);//output vertex
+        glNormal3f(x, y, 1);
+        glNormal3f(x, y, -1);
+        glVertex2f(r * x, r * y);//output vertex
     }
     glEnd();
 }
@@ -231,28 +234,28 @@ void display()
 	//draw a yellow sun
     glUseProgram(SunShader.Shader);
     M = glm::mat4(1.0f) * glm::rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    SunShader.bindUniforms(M, V, P, glm::vec4(0.0), sunColor, t);
+    SunShader.bindUniforms(M, V, P, lightSource, sunColor, t);
     glutSolidSphere(sunRadius, sunSlices, sunStacks);
 	
 	//draw a blue earth
     glUseProgram(PhongShader.Shader);
     M = glm::rotate(earthDegree * t, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::translate(glm::vec3(50.0f, 0.0f, 0.0f));
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), earthColor, t);
+    PhongShader.bindUniforms(M, V, P, lightSource, earthColor, t);
     drawSphere(earthRadius, planetSlices, planetStacks);
 	
 	// draw the grey earth's moon
 	// remember that the transformation of the earth also affects the moon
     M = M * glm::rotate(moonDegree * t, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::translate(glm::vec3(20.0f, 0.0f, 0.0f));
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), moonColor, t);
+    PhongShader.bindUniforms(M, V, P, lightSource, moonColor, t);
     drawSphere(moonRadius, moonSlices, moonStacks);
 	
 	//draw saturn with its rings
     M = glm::rotate(saturnDegree * t, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::translate(glm::vec3(100.0f, 0.0f, 0.0f));
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), saturnColor, t);
+    PhongShader.bindUniforms(M, V, P, lightSource, saturnColor, t);
     drawSphere(saturnRadius, planetSlices, planetStacks);
     // rings
     M = M * glm::rotate(120.0f, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::rotate(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), ringsColor, t);
+    PhongShader.bindUniforms(M, V, P, lightSource, ringsColor, t);
     for (double i = saturnRadius + distanceFromSaturn;
          i < (saturnRadius + distanceFromSaturn) + (numberOfRings * distanceBetweenRings);
          i += distanceBetweenRings)

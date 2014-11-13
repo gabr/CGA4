@@ -1,3 +1,6 @@
+// Arkadiusz Gabrys qe83mepi
+// Agnieszka Zacher by57zeja
+
 uniform float Time;  // updated each frame by the application
 
 uniform mat4 MVP;  // updated each draw call

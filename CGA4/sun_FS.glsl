@@ -1,3 +1,6 @@
+// Arkadiusz Gabrys qe83mepi
+// Agnieszka Zacher by57zeja
+
 varying float height;
 varying vec3 v_normal;
 varying vec3 v_viewingVec;

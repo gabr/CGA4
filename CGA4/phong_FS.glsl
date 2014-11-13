@@ -1,3 +1,5 @@
+// Arkadiusz Gabrys qe83mepi
+// Agnieszka Zacher by57zeja
 
 varying vec3 N; 
 varying vec4 P;
@@ -7,13 +9,34 @@ uniform vec4 Color;  // updated each draw call
  
 void main() {
 
-	
-	//TODO add phong lighting
+    vec3 L = normalize((LightSource - P).xyz);
+    vec3 E = normalize(P.xyz);
+    vec3 R = reflect(N, L);
 
-	vec3 L;
-	vec3 E;
+    // phong
+    int s = 7;
+    vec4 diff, spec, ambient;
+    float dotPr = 0.0;
+    
+    // diff
+    dotPr = dot(N, L);
+    if (dotPr < 0.0)
+    {
+        dotPr = 0.0;
+    }
+    diff = Color * dotPr;
 
-	vec3 R;
+    // spec
+    dotPr = dot(E, R);
+    if (dotPr < 0.0)
+    {
+        dotPr = 0.0;
+    }
 
-        gl_FragColor = Color;
+    spec = vec4(1.0) * pow(dotPr, s);
+
+    // ambient
+    ambient = Color * 0.2;
+
+        gl_FragColor = ambient + diff + spec;
 }
