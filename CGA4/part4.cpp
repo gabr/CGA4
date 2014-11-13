@@ -91,7 +91,7 @@ struct ShaderUniforms
 
         glm::mat4 MV = V * M;
         glm::mat4 MVP = P * V * M;
-        glm::mat3 NormalMatrix;
+        glm::mat3 NormalMatrix = glm::mat3(glm::transpose(glm::inverse(MV)));
 
 
 		glUniformMatrix4fv(location_MVP, 1, false, glm::value_ptr(MVP));

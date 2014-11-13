@@ -19,10 +19,8 @@ void main()
 		HINT: You can use your own sun-shaders from previous tasks!
 	*/
     
-    v_normal = normalize(gl_Normal);
-
-    vec4 tmp = normalize(vec4(0.0) - (MV * gl_Vertex));
-    v_viewingVec = (transpose(MV) * tmp).xyz;
+    v_normal = normalize(NormalMatrix * gl_Normal);
+    v_viewingVec = normalize(vec4(0.0) - (MV * gl_Vertex)).xyz;
 
     vec3 shiftTmp = gl_Normal * sin(rand(gl_Normal.xy) + Time/50) * 1.2;
     vec4 phase = abs(vec4(shiftTmp.x, shiftTmp.y, shiftTmp.z, 0.0));
