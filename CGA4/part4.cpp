@@ -20,11 +20,13 @@ bool wireframe_mode = false;
 float t  = 0;  // the time parameter (incremented in the idle-function)
 float speed = 0.1;  // rotation speed of the light source in degree/frame
 
-const double planetSlices = 24;
-const double planetStacks = 24;
+const double planetSlices = 64;
+const double planetStacks = 64;
 
 // sun
 const double sunRadius = 25;
+const double sunSlices = 100;
+const double sunStacks = 100;
 glm::vec4 sunColor(1.0, 1.0, 0.0, 0.0);
 
 // earth
@@ -33,8 +35,8 @@ const float earthDegree = 2.0;
 glm::vec4 earthColor(0.0, 0.0, 1.0, 0.0);
 // moon
 const double moonRadius = 6;
-const double moonSlices = 12;
-const double moonStacks = 12;
+const double moonSlices = 32;
+const double moonStacks = 32;
 const float moonDegree = 4.0;
 glm::vec4 moonColor(0.5, 0.5, 0.5, 0.0);
 
@@ -230,7 +232,7 @@ void display()
     glUseProgram(SunShader.Shader);
     M = glm::mat4(1.0f) * glm::rotate(90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     SunShader.bindUniforms(M, V, P, glm::vec4(0.0), sunColor, t);
-    glutSolidSphere(sunRadius, planetSlices, planetStacks);
+    glutSolidSphere(sunRadius, sunSlices, sunStacks);
 	
 	//draw a blue earth
     glUseProgram(PhongShader.Shader);
