@@ -30,15 +30,24 @@ glm::vec4 sunColor(1.0, 1.0, 0.0, 0.0);
 // earth
 const double earthRadius = 12;
 const float earthDegree = 2.0;
+glm::vec4 earthColor(0.0, 0.0, 1.0, 0.0);
 // moon
 const double moonRadius = 6;
 const double moonSlices = 12;
 const double moonStacks = 12;
 const float moonDegree = 4.0;
+glm::vec4 moonColor(0.5, 0.5, 0.5, 0.0);
 
 // saturn
 const double saturnRadius = 16;
 const float saturnDegree = 1.0;
+glm::vec4 saturnColor(1.0, 0.85, 0.6, 0.0);
+// rings
+const double distanceFromSaturn = 7.0;
+const double distanceBetweenRings = 0.4;
+const double numberOfRings = 10;
+const double numberOfCircleSegments = 60;
+glm::vec4 ringsColor(0.8, 0.6, 0.5, 0.0);
 
 
 //We need to keep track of matrices ourselves
@@ -226,22 +235,26 @@ void display()
 	//draw a blue earth
     glUseProgram(PhongShader.Shader);
     M = glm::rotate(earthDegree * t, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::translate(glm::vec3(50.0f, 0.0f, 0.0f));
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(0.0, 0.0, 1.0, 0.0), t);
+    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), earthColor, t);
     drawSphere(earthRadius, planetSlices, planetStacks);
 	
 	// draw the grey earth's moon
 	// remember that the transformation of the earth also affects the moon
     M = M * glm::rotate(moonDegree * t, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::translate(glm::vec3(20.0f, 0.0f, 0.0f));
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(0.5, 0.5, 0.5, 0.0), t);
+    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), moonColor, t);
     drawSphere(moonRadius, moonSlices, moonStacks);
 	
 	//draw saturn with its rings
     M = glm::rotate(saturnDegree * t, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::translate(glm::vec3(100.0f, 0.0f, 0.0f));
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(1.0, 0.85, 0.6, 0.0), t);
+    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), saturnColor, t);
     drawSphere(saturnRadius, planetSlices, planetStacks);
     // rings
-    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(0.8, 0.6, 0.5, 0.0), t);
-    drawCircle(30, 60);
+    M = M * glm::rotate(120.0f, glm::vec3(0.0f, 0.0f, 1.0f)) * glm::rotate(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), ringsColor, t);
+    for (double i = saturnRadius + distanceFromSaturn;
+         i < (saturnRadius + distanceFromSaturn) + (numberOfRings * distanceBetweenRings);
+         i += distanceBetweenRings)
+         drawCircle(i, numberOfCircleSegments);
 	
     // Hint: before you draw geometry make sure the shader is bound, as well as the uniforms
 	glutSwapBuffers();
