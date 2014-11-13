@@ -221,6 +221,9 @@ void display()
     drawSphere(moonRadius, moonSlices, moonStacks);
 	
 	//draw saturn with its rings
+    M = glm::rotate(saturnDegree * t, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::translate(glm::vec3(100.0f, 0.0f, 0.0f));
+    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(1.0, 0.85, 0.6, 0.0), t);
+    drawSphere(saturnRadius, planetSlices, planetStacks);
 	
     // Hint: before you draw geometry make sure the shader is bound, as well as the uniforms
 
