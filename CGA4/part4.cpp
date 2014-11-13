@@ -174,6 +174,21 @@ void drawSphere(float r, int slices, int stacks)
 
 }
 
+void drawCircle(float r, int num_segments)
+{
+    glBegin(GL_LINE_LOOP);
+    for (int ii = 0; ii < num_segments; ii++)
+    {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);//get the current angle
+
+        float x = r * cosf(theta);//calculate the x component
+        float y = r * sinf(theta);//calculate the y component
+
+        glVertex2f(x, y);//output vertex
+    }
+    glEnd();
+}
+
 
 void reshape(int w, int h)
 {
@@ -224,11 +239,11 @@ void display()
     M = glm::rotate(saturnDegree * t, glm::vec3(0.0f, 1.0f, 0.0f)) * glm::translate(glm::vec3(100.0f, 0.0f, 0.0f));
     PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(1.0, 0.85, 0.6, 0.0), t);
     drawSphere(saturnRadius, planetSlices, planetStacks);
+    // rings
+    PhongShader.bindUniforms(M, V, P, glm::vec4(0.0), glm::vec4(0.8, 0.6, 0.5, 0.0), t);
+    drawCircle(30, 60);
 	
     // Hint: before you draw geometry make sure the shader is bound, as well as the uniforms
-
-
-
 	glutSwapBuffers();
 }
 
