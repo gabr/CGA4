@@ -11,10 +11,10 @@ void main() {
 
     vec3 L = normalize((LightSource - P).xyz);
     vec3 E = normalize(P.xyz);
-    vec3 R = reflect(N, L);
+    vec3 R = reflect(L, N);
 
     // phong
-    int s = 7;
+    int s = 3;
     vec4 diff, spec, ambient;
     float dotPr = 0.0;
     

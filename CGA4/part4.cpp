@@ -39,8 +39,8 @@ const float earthDegree = 2.0;
 glm::vec4 earthColor(0.0, 0.0, 1.0, 0.0);
 // moon
 const double moonRadius = 6;
-const double moonSlices = 32;
-const double moonStacks = 32;
+const double moonSlices = 15;
+const double moonStacks = 15;
 const float moonDegree = 4.0;
 glm::vec4 moonColor(0.5, 0.5, 0.5, 0.0);
 
@@ -95,10 +95,12 @@ struct ShaderUniforms
         glm::mat4 MVP = P * V * M;
         glm::mat3 NormalMatrix = glm::mat3(glm::transpose(glm::inverse(MV)));
 
+        // LightSource = glm::mat4(1.0) * V * LightSource;
+
 		glUniformMatrix4fv(location_MVP, 1, false, glm::value_ptr(MVP));
 		glUniformMatrix4fv(location_MV, 1, false, glm::value_ptr(MV));
 		glUniformMatrix3fv(location_NormalMatrix, 1, false, glm::value_ptr(NormalMatrix));
-		glUniform4fv(location_LightSourceViewSpace, 1, glm::value_ptr(V * LightSource));
+        glUniform4fv(location_LightSourceViewSpace, 1, glm::value_ptr(LightSource));
 		glUniform4fv(location_Color, 1, glm::value_ptr(Color));
 		glUniform1f(location_Time, 10*t);
 	}
@@ -126,7 +128,7 @@ void initGL() {
 
 
     V = glm::lookAt(eye,center,up);
-
+    lightSource = V * lightSource;
 
 
     // enable line smoothing:
@@ -197,7 +199,6 @@ void drawCircle(float r, int num_segments)
         float y = sinf(theta);//calculate the y component
 
         glNormal3f(x, y, 1);
-        glNormal3f(x, y, -1);
         glVertex2f(r * x, r * y);//output vertex
     }
     glEnd();
